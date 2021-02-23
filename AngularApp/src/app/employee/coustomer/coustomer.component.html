@@ -1,0 +1,202 @@
+<nav class="navBar">
+<span style="margin:10px 100px; text-transform: capitalize;font-size: 25px;">{{role}}</span>
+<button class="btn btn-custom right" style="margin:10px 100px " (click)="logout()">logout</button>
+</nav>
+<!-- *ngIf="role=='agent'" -->
+ <div class="row" *ngIf="role=='agent'||role=='admin'">
+    <div class="col s12 ">
+      <div class="card ">
+        <div class="card-content white-text">
+            <div class="row">
+                <div class="col s5">
+<form #customerForm="ngForm" (ngSubmit)='coustomerSubmit(customerForm)'>
+    <input type="hidden" name='_id' #_id='ngModel' [(ngModel)]=coustomer._id>
+ 
+   <div class="row">
+    <div class="input-field col s12">
+            <label class="active" for='name'>Name</label>
+
+      <input placeholder="Enter full Name" id='name' type="text" required name="name" #name=ngModel [(ngModel)]='coustomer.name' 
+   />
+    </div>
+  </div>
+    <div class="row">
+    <div class="input-field col s12">
+            <label class="active" for='name'>Email</label>
+
+      <input placeholder="Enter email id of coustomer" id='email' type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required name="email" #email=ngModel [(ngModel)]='coustomer.email' 
+   />
+    </div>
+  </div>
+   <div class="row">
+    <div class="input-field col s12">
+      <input id='loan' placeholder="Eg: Home Loan" type="text" name="loan" #loan=ngModel [(ngModel)]='coustomer.loan'>
+         <label class="active" for='loan'>Loan Type</label>
+
+    </div>
+  </div>
+   <div class="row">
+    <div class="input-field col s12">
+      <input id='ammount' placeholder="Loan Ammount" min="1" type="number" name="ammount" #ammoun=ngModel [(ngModel)]='ammount'>
+        <label class="active" for='ammount'>Ammount</label>
+
+    </div>
+  </div>
+   <div class="row">
+    <div class="input-field col s12">
+      <input type="number" placeholder="Enter in months" min="1" id='duration'name="duration" #duratio=ngModel [(ngModel)]='duration' (change)="changeValue();">
+         <label class="active" for='duration'>Duration (months)</label>
+<div *ngIf="ammoun.value<=duratio.value&&ammoun.touched&&ammoun.dirty" style="color: red;">
+Ammount cannot be less then or equal to duration 
+</div>
+    </div>
+  </div>
+   <div class="row">
+    <div class="input-field col s12">
+      <!-- <input type="number" min="1" placeholder="EMI ammount each month" id='emi'name="emi" #emi=ngModel [(ngModel)]='coustomer.emi'> -->
+         <label class="active" for='emi'>EMI</label>
+<div *ngIf="duratio.dirty&&ammoun.touched&&ammoun.dirty" style="color: #26a692;font-size:12px ;">
+{{valcoustomer/this.duratio.value}}(per month)
+</div>
+    </div>
+  </div>
+   <!-- <div class="row">
+    <div class="input-field col s12"> -->
+      <input type="hidden"   name="intrestRate"  #intrestRate=ngModel [(ngModel)]=coustomer.intrestRate>
+      <input type="hidden"  name="status"   #status=ngModel [(ngModel)]=coustomer.status>
+
+    <!-- </div>
+  </div> -->
+  <div *ngIf="duratio.dirty&&ammoun.touched&&ammoun.dirty" style="color: #26a692;font-size:12px ;">
+Amount to be paid after {{duratio.value}} months {{valcoustomer|number : '1.2-2'}} Rupees
+</div>
+             <label class="active" >Intrest rate is 8%</label>
+
+  <div class="row" *ngIf="editStatus&&role=='admin'">
+    <div class="input-field col s12">
+           <label>Status of loan</label>
+
+<button class="btn btn-custom right " style="margin-left:15px" type="submit"  (click)="approve(customerForm,'approved')">Approve</button>
+<button class="btn btn-custom right " type="button" (click)="approve(customerForm,'rejected')">Reject</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12">
+<button class="btn btn-custom right " style="margin-left:8px" type="submit" [disabled]=customerForm.invalid >Submit</button>
+<button class="btn btn-custom right " type="button" (click)='resetForm(customerForm)'>Reset</button>
+    </div>
+  </div>
+
+</form>
+</div>
+<div class="col s7" style="color: black;">
+  <div style="display: flex;">
+  <input type="text" placeholder="Search for name " name='searchText' [(ngModel)]='searchText'  />
+<span class="material-icons" (click)="searchText=''" style="cursor: pointer;">
+close
+</span> 
+</div>
+<div style="height: 70vh;overflow-y: auto;">
+  <table class="responsive-table highlight">
+    <thead class="highlight" style="background-color: lightgray;">
+    <th>Name</th>
+    <th>Loan </th>
+    <th>Ammount</th>
+    <th>Status</th>
+    <th>EMI</th>
+      <th>Intrest Rate</th>
+    <th>Duration</th>
+     <th>Action</th></thead>
+    <ng-container *ngFor="let d of coustomerArray">
+    <tr *ngIf="filterCondition(d)">
+<td>{{d.name}}</td>
+<td>{{d.loan}}</td>
+<td>{{d.ammount}}</td>
+<td>{{d.status}}</td>
+<td>{{d.emi|number : '1.2-2'}}</td>
+<td>{{d.intrestRate}}</td>
+<td>{{d.duration}}</td>
+<td><i  *ngIf="d.status!='approved'" class="material-icons" (click)="editCoustomer(d)">
+edit
+</i><i class="material-icons" style="margin-left: 20px;" (click)="deleteCoustomer(d)">
+delete
+</i>
+
+</td>
+
+    </tr></ng-container>
+  </table>
+  </div>
+</div>
+</div>
+     </div>
+     
+      </div>
+    </div>
+  </div>
+  <!-- <div class="row" style="color: black;" *ngIf="role=='admin'">
+    <div class="col s12 ">
+      <div class="card ">
+        <div class="card-content white-text">
+  <div style="display: flex;">
+  <input type="text" placeholder="Search for name " name='searchText' [(ngModel)]='searchText'  />
+<span class="material-icons" (click)="searchText=''" style="cursor: pointer;color: black;">
+close
+</span> 
+</div>
+  <table class="responsive-table highlight" style="color: black;">
+    <th>Name</th>
+    <th>Position </th>
+    <th>Office</th>
+    <th>Salary</th>
+    <th>Action</th>
+    <ng-container *ngFor="let d of employeesArray">
+    <tr *ngIf="filterCondition(d)">
+<td>{{d.name}}</td>
+<td>{{d.position}}</td>
+<td>{{d.office}}</td>
+<td>{{d.salary}}</td>
+<td><i class="material-icons" (click)="editEmployee(d)">
+edit
+</i><i class="material-icons" style="margin-left: 20px;" (click)="deletEmployee(d)">
+delete
+</i>
+
+</td>
+
+    </tr></ng-container>
+  </table>
+  </div></div>
+</div></div> -->
+<div class="col s7" style="color: black;" *ngIf="role=='coustomer'">
+
+  <table class="responsive-table highlight" style="background-color: white;">
+    <thead class="highlight" style="background-color: lightgray;">
+    <th>Name</th>
+    <th>Loan </th>
+    <th>Ammount</th>
+    <th>Status</th>
+    <th>EMI</th>
+      <th>Intrest Rate</th>
+    <th>Duration</th>
+    </thead>
+    <ng-container *ngFor="let d of coustomerArray">
+    <tr *ngIf="mailId==d.email">
+<td>{{d.name}}</td>
+<td>{{d.loan}}</td>
+<td>{{d.ammount}}</td>
+<td>{{d.status}}</td>
+<td>{{d.emi|number : '1.2-2'}}</td>
+<td>{{d.intrestRate}}</td>
+<td>{{d.duration}}</td>
+<!-- <td><i  *ngIf="d.status!='approved'" class="material-icons" (click)="editCoustomer(d)">
+edit
+</i><i class="material-icons" style="margin-left: 20px;" (click)="deleteCoustomer(d)">
+delete
+</i>
+
+</td> -->
+
+    </tr></ng-container>
+  </table>
+</div> 
