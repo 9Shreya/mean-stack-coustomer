@@ -15,6 +15,7 @@ console.log(k,w,p,q); //here we can see we got that value directly by that name
 
 var employeeControler=require('./controllers/employeeControlers')
 var userController=require('./controllers/userController')
+var coustomerController=require('./controllers/coustomerController')
 
 var app =express();
 app.use(bodyParser.json());//now we configure express middleware in order to send json 
@@ -30,6 +31,7 @@ app.listen(process.env.PORT,()=>{
     //now to start express server we call function app.listen 
 app.use('/employees',employeeControler);
 app.use('/api',userController);
+app.use('/coustomer',coustomerController);
 
 // error handler
 app.use((err, req, res, next) => {

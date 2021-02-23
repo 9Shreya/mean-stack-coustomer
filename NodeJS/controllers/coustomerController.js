@@ -4,7 +4,7 @@ var ObjectId=require('mongoose').Types.ObjectId
 var {User}=require('../models/user');
 const jwt=require('jsonwebtoken')
 
-var {Employee}=require('../models/employee');
+var {Coustomerr}=require('../models/coustomer');
 const { json } = require('body-parser');
 
 const http = require("http")
@@ -51,11 +51,11 @@ console.log(payload);
     }
 }
 
-//==>  localhost:3000/employees/
+//==>  localhost:3000/coustomer/
 router.get('/',(req,res)=>{
     //console.log(req,res);
-    Employee.find((err,docs)=>{
-        verifyJwtToken(req,res)
+    Coustomerr.find((err,docs)=>{
+       // verifyJwtToken(req,res)
 if(!err){
     res.send({status:200,result:docs});
 console.log(docs);
@@ -64,13 +64,13 @@ else{ console.log('Error' +JSON.stringify(err,undefined,2))}
     })
 });
 
-//==> localhost:3000/employees/id
+//==> localhost:3000/coustomer/id
 router.get('/:id',(req,res)=>{
           verifyJwtToken(req,res)
 
         if (!ObjectId.isValid(req.params.id))
         return res.status(400).send(`No record with given id : ${req.params.id}`);
-    Employee.findById(req.params.id,(err,doc)=>{
+    Coustomerr.findById(req.params.id,(err,doc)=>{
         if(!err){
             res.send({status:200,result:doc});
         }
@@ -81,23 +81,28 @@ router.get('/:id',(req,res)=>{
     }
     })
 })
-let urlCall='http//localhost:3000/employees'
+let urlCall='http//localhost:3000/coustomer'
 // router.post('/',(req,res)=>{
 // })
 // router.get('/',(req,res)=>{ 
 // })
 
-//==> localhost:3000/employees
+//==> localhost:3000/coustomer
 router.post('/',(req,res)=>{
-           verifyJwtToken(req,res)
-
-var emp=new Employee({
+         //  verifyJwtToken(req,res)
+console.log(req);
+var coust=new Coustomerr({
     name:req.body.name,
-    position:req.body.position,
-    office:req.body.office,
-    salary:req.body.salary
+    loan:req.body.loan,
+    email:req.body.email,
+    ammount:req.body.ammount,
+    status:req.body.status,
+    emi:req.body.emi,
+    intrestRate:req.body.intrestRate,
+    duration:req.body.duration
+
 });
-emp.save((err,doc)=>{
+coust.save((err,doc)=>{
     if(!err){
         res.send({requestLocation:urlCall,status:200,result:doc})
     }
@@ -114,14 +119,18 @@ router.put('/:id',(req,res)=>{
     if(!ObjectId.isValid(req.params.id)){
         return res.status(400).send('No record with this Id')
     }
-    var emp=
+    var coustomer=
     {
-        name:req.body.name,
-        position:req.body.position,
-        office:req.body.office,
-        salary:req.body.salary     
+         name:req.body.name,
+    loan:req.body.loan,
+    email:req.body.email,
+    ammount:req.body.ammount,
+    status:req.body.status,
+    emi:req.body.emi,
+    intrestRate:req.body.intrestRate,
+    duration:req.body.duration  
     }
-    Employee.findByIdAndUpdate(req.params.id,{$set:emp},{new:true},
+    Coustomerr.findByIdAndUpdate(req.params.id,{$set:coustomer},{new:true},
         (err,doc)=>{
             if(!err){res.send({status:200,result:doc})}
             else{console.log('error '+JSON.stringify(err,undefined,2));
@@ -133,22 +142,13 @@ router.put('/:id',(req,res)=>{
 router.delete('/:id',(req,res)=>{
             verifyJwtToken(req,res)
 
-    //    User.findOne({ _id: req.body._id },
-    //     (err, user) => {
-    //         console.log(req._id);
-    //         if (!user)
-    //             return res.status(404).json({ status: false, message: 'User record not found.' });
-    //         else
-    //              res.status(200).json({ status: true, user : _.pick(user,['fullName','email']) });
-    //     }
-    // );
     if(!ObjectId.isValid(req.params.id)){
         return res.status(400).send(`no record with given id : ${req.params.id} `)
     }
     else{
-          Employee.findByIdAndRemove(req.params.id, (err, doc) => {
+          Coustomerr.findByIdAndRemove(req.params.id, (err, doc) => {
         if (!err) {return res.send({status:200,result:doc}); }
-        else { console.log('Error in Employee Delete :' + JSON.stringify(err, undefined, 2)); 
+        else { console.log('Error in Coustomer Delete :' + JSON.stringify(err, undefined, 2)); 
                     return res.status(400).send('No record with this Id')
 }
     });
